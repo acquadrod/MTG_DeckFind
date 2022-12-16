@@ -20,8 +20,10 @@ $regex = "^(\d)x?\ (.+)$"
 
 function GetInventory ($filePath) {
     $out=@{}
+    $total=0
     Import-Csv $filePath | ForEach-Object {
         if (!$out.ContainsKey($_.CardName)) {
+            $total+=[int]$_.Quantity
             Write-debug "not found $($_.CardName)"
             $folder=@{}
             $folder.add($_.FolderName, [int]$_.Quantity)
@@ -31,6 +33,7 @@ function GetInventory ($filePath) {
             $obj=New-Object PSObject -Property @{name=$_.CardName; tot=$_.Quantity; folders=$folder; languages=$lang}
             $out.add($_.CardName, $obj)
         } else {
+            $total+=[int]$_.Quantity
             Write-debug  "found $($_.CardName)"
             $out[$_.CardName].tot = [int]$out[$_.CardName].tot + [int]$_.quantity
             #check folders counter
@@ -49,7 +52,7 @@ function GetInventory ($filePath) {
             }
         }
     }
-
+    Write-Host "Found $total cards in your inventory"
     
     return $out
 
@@ -58,7 +61,7 @@ function GetInventory ($filePath) {
 #read deck  format  <quantity> <card name>
 Function ReadDeck($f) {
     $d=@{}
-    Write-Information $f
+    #Write-Information $f
     Get-Content -Path $f | ForEach-Object {
         if($_ -match $regex){
             if ($d.ContainsKey($Matches.2)) {
@@ -121,7 +124,7 @@ $inventory=GetInventory ($inventoryPath)
 
 #cycle on decks
 foreach ($dd in $decks) {
-    Write-Host $dd
+    #Write-Host $dd
     $stats+=CheckDeck ($dd,$inventory)
 }
 

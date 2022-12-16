@@ -1,3 +1,5 @@
+#in allDeckFiles folder there are all json deck files downloaded from  https://mtgjson.com/api/v5/AllDeckFiles.zip
+# 
 Get-ChildItem -Path "AllDeckFiles\" -Filter *.json -File | Select-Object -ExpandProperty FullName | ForEach-Object {
 
     $obj=(Get-Content -Path $_|ConvertFrom-Json).data
