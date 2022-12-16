@@ -54,21 +54,22 @@ function GetInventory ($filePath) {
 
 }
 
-#read deck
+#read deck  format  <quantity> <card name>
 Function ReadDeck($file) {
-    $deck=@{}
+    $d=@{}
+    Write-Information $file
     Get-Content -Path $file  | ForEach-Object {
         if($_ -match $regex){
-            if ($deck.ContainsKey($Matches.2)) {
-                $deck[$Matches.2] += [int]$Matches.1
+            if ($d.ContainsKey($Matches.2)) {
+                $d[$Matches.2] += [int]$Matches.1
             } else {
-                $deck.add($Matches.2,[int]$Matches.1)
+                $d.add($Matches.2,[int]$Matches.1)
             }
             
             
         }
     }
-    return $deck
+    return $d
 }
 
 function CheckDeck ($path) {
@@ -76,13 +77,14 @@ function CheckDeck ($path) {
     $found=@{}
     $notfound=@{}
 
+    
     $list=ReadDeck($path)
 
     $deckCardsCount =($list.Values |Measure-Object -sum ).sum
     $cardFound=0
 
-    Write-Host $deckCardsCount
-    $inventory=GetInventory ($inventoryPath)
+    
+    
 
     foreach ($card in $list.Keys) {
         if ($inventory.ContainsKey($card)) {
@@ -106,12 +108,19 @@ function CheckDeck ($path) {
 #########################
 # main loop  
 #
+$stats =@()
 $decks=Get-ChildItem -Path $deckPath -File -Filter *.txt | Select-Object -ExpandProperty FullName 
 
+
+#read inventory
+$inventory=GetInventory ($inventoryPath)
+
 #cycle on decks
-foreach ($deck in $decks) {
-    CheckDeck $deck
+foreach ($dd in $decks) {
+    Write-Host $dd
+    $stats+=CheckDeck ($dd,$inventory)
 }
 
+$stats|Sort-Object  perc -Descending
 #Write-Output $notfound
  
