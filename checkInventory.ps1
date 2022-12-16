@@ -6,7 +6,7 @@ param(
 
 #common variables
 
-$regex = "^(\d)\ (.+)$"
+$regex = "^(\d)x?\ (.+)$"
 
 
 
@@ -55,10 +55,10 @@ function GetInventory ($filePath) {
 }
 
 #read deck  format  <quantity> <card name>
-Function ReadDeck($file) {
+Function ReadDeck($f) {
     $d=@{}
-    Write-Information $file
-    Get-Content -Path $file  | ForEach-Object {
+    Write-Information $f
+    Get-Content -Path $f | ForEach-Object {
         if($_ -match $regex){
             if ($d.ContainsKey($Matches.2)) {
                 $d[$Matches.2] += [int]$Matches.1
@@ -78,7 +78,7 @@ function CheckDeck ($path) {
     $notfound=@{}
 
     
-    $list=ReadDeck($path)
+    $list=ReadDeck($path[0])
 
     $deckCardsCount =($list.Values |Measure-Object -sum ).sum
     $cardFound=0
@@ -102,7 +102,10 @@ function CheckDeck ($path) {
         }
         
     }
-    $obj=New-Object PSObject -Property @{deckName=$path; cardsCount = $deckCardsCount; cardsFoundCount=$cardFound; perc= 100*$cardFound/$deckCardsCount ; found=$found; notFound=$notfound }
+    $deckname=([string]$path[0]).Substring(([string]$path[0]).LastIndexOf("/")+1)
+    $deckname=($deckname).Substring(($deckname).LastIndexOf("\")+1)
+
+    $obj=New-Object PSObject -Property @{deckName=$deckname; cardsCount = $deckCardsCount; cardsFoundCount=$cardFound; perc= 100*$cardFound/$deckCardsCount ; found=$found; notFound=$notfound }
     return $obj
 }
 #########################
@@ -121,6 +124,6 @@ foreach ($dd in $decks) {
     $stats+=CheckDeck ($dd,$inventory)
 }
 
-$stats|Sort-Object  perc -Descending
+$stats|Sort-Object  perc -Descending |Select-Object deckName, perc
 #Write-Output $notfound
  
