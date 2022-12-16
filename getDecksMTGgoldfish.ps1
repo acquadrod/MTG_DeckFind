@@ -1,8 +1,8 @@
 #download deck from mtggoldfish homepage pauper
 #
 $site="https://www.mtggoldfish.com"
-$urlo="/deck/custom/pauper?page=3#paper"    # for more pages deck/custom/standard?page=2#paper
-$savepath="pauper\"
+$urlo="/deck/custom/pauper?page=10#paper"    # for more pages deck/custom/standard?page=2#paper
+$savepath="decks\"
 
 
 $uripathDownload="/deck/download/"
@@ -31,7 +31,7 @@ foreach ($num in $numbers) {
     #Write-Host $uri
     #don't like this method to extract but it was the fastest
     $head=[string](Invoke-WebRequest –Uri $uri).Headers['Content-Disposition']
-    $filename = $savepath+$head.Substring($head.IndexOf("=")+1).Replace('"','')
+    $filename = $savepath+$num+"-"+$head.Substring($head.IndexOf("=")+1).Replace('"','').Replace('/','_')
     Write-Host $filename
     (Invoke-WebRequest –Uri $uri).Content | Out-File -FilePath $filename
 

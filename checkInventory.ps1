@@ -6,6 +6,7 @@ param(
 
 #common variables
 
+
 $regex = "^(\d)x?\ (.+)$"
 
 
@@ -124,6 +125,6 @@ foreach ($dd in $decks) {
     $stats+=CheckDeck ($dd,$inventory)
 }
 
-$stats|Sort-Object  perc -Descending |Select-Object deckName, perc
+$stats|Sort-Object  perc -Descending |Select-Object deckName, perc 
 #Write-Output $notfound
  
