@@ -1,7 +1,9 @@
 param(
     [Parameter()]
     [String]$inventoryPath="all-folders.csv",
-    [String]$deckPath="decks\"
+    [String]$deckPath="decks\",
+    [int]$showDetail = 0,
+    [int]$top = 10
 )
 
 #common variables
@@ -81,15 +83,15 @@ function CheckDeck ($path) {
     $found=@{}
     $notfound=@{}
 
-    
+    $card_found_list=@()
+    $card_not_found_list=@()
+
     $list=ReadDeck($path[0])
 
     $deckCardsCount =($list.Values |Measure-Object -sum ).sum
     $cardFound=0
 
-    
-    
-
+   
     foreach ($card in $list.Keys) {
         if ($inventory.ContainsKey($card)) {
             if ($inventory[$card].tot -ge $list[$card]) {
@@ -99,17 +101,23 @@ function CheckDeck ($path) {
                 $found.add($card,$inventory[$card].tot)
                 $cardFound += $inventory[$card].tot
                 $notfound.add($card,$list[$card] - $inventory[$card].tot)
-
             }
+            $tmp=New-Object PSObject -Property @{name=$card;quantity=$list[$card]; folders=$inventory[$card].folders.Keys;languages=$inventory[$card].languages.Keys }
+            $card_found_list += $tmp
         } else {
             $notfound.add($card,$list[$card])
+            $tmp=New-Object PSObject -Property @{name=$card;quantity=$list[$card] }
+            $card_not_found_list += $tmp
         }
         
     }
     $deckname=([string]$path[0]).Substring(([string]$path[0]).LastIndexOf("/")+1)
     $deckname=($deckname).Substring(($deckname).LastIndexOf("\")+1)
-
-    $obj=New-Object PSObject -Property @{deckName=$deckname; cardsCount = $deckCardsCount; cardsFoundCount=$cardFound; perc= 100*$cardFound/$deckCardsCount ; found=$found; notFound=$notfound }
+    if ($showDetail) {
+        $obj=New-Object PSObject -Property @{deckName=$deckname; cardsCount = $deckCardsCount; cardsFoundCount=$cardFound; perc= 100*$cardFound/$deckCardsCount ; found=$card_found_list; notFound=$card_not_found_list }
+    } else {
+        $obj=New-Object PSObject -Property @{deckName=$deckname; cardsCount = $deckCardsCount; cardsFoundCount=$cardFound; perc= 100*$cardFound/$deckCardsCount ; found=$found; notFound=$notfound }
+    }
     return $obj
 }
 #########################
@@ -118,6 +126,8 @@ function CheckDeck ($path) {
 $stats =@()
 $decks=Get-ChildItem -Path $deckPath -File -Filter *.txt -Recurse| Select-Object -ExpandProperty FullName 
 
+
+Write-Host "Found $($decks.Count) decks"
 
 #read inventory
 $inventory=GetInventory ($inventoryPath)
@@ -129,6 +139,11 @@ foreach ($dd in $decks) {
 }
 
 #you can limit output
-$stats|Sort-Object  perc -Descending |Select-Object deckName, perc 
+if ($showDetail) {
+    $stats|Sort-Object  perc -Descending|Select-Object -first $showDetail |ConvertTo-Json  -Depth 3
+} else {
+    $stats|Sort-Object  perc -Descending |Select-Object deckName, perc -First $top
+}
+
 #Write-Output $notfound
  

@@ -1,4 +1,6 @@
 decks/
 AllDeckFiles/
 decks_dl/
+MTGJSON/
 .DS_Store
+*/.DS_Store
