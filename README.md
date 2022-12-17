@@ -10,12 +10,12 @@ The script downloads user custom decks from MTGGoldfish site and save it. it is 
 
 **inventoryPath <filepath>**: path to MTG dragon shield card scanner CSV. (default: all-folders.csv) <br>
 **deckPath <path>**: path to a folder containing decks' card lists in .txt format like this <br>
-    `4 Burning-Tree Emissary` <br>`4 Castle Embereth` <br> `4 Dragon Fodder`
+    `4 Burning-Tree Emissary` <br>`4 Castle Embereth` <br> `4 Dragon Fodder` <br>
 **showDeatil n**: show top n in JSON format
 
 ***HINT*** to export missing cards in text format for card market site type this command line
     `./checkInventory.ps1  -showDetail 1|ConvertFrom-Json|Select-Object notFound|Foreach-object {foreach ($c in $_.notFound) {write-host $c.quantity $c.name}}`
-    
+
     
 ## getDecksMTGgoldfish.ps1
 No line parameters, check the first lines of the code.
