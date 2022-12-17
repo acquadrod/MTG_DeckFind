@@ -3,9 +3,12 @@
 
 #download deck from tappedout homepage pauper
 #
+$type="pioneer"
 $site="https://tappedout.net/"
-$urlo="/mtg-deck-builder/pioneer/"    # 
-$savepath="decks\"
+$urlo="/mtg-deck-builder/$type/budget"    # 
+$savepath="decks\tapped\$type\"
+
+New-item -type directory -path $savepath -Force
 
 
 $uripathDownload="/mtg-decks/"

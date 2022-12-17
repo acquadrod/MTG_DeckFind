@@ -116,7 +116,7 @@ function CheckDeck ($path) {
 # main loop  
 #
 $stats =@()
-$decks=Get-ChildItem -Path $deckPath -File -Filter *.txt | Select-Object -ExpandProperty FullName 
+$decks=Get-ChildItem -Path $deckPath -File -Filter *.txt -Recurse| Select-Object -ExpandProperty FullName 
 
 
 #read inventory
@@ -128,6 +128,7 @@ foreach ($dd in $decks) {
     $stats+=CheckDeck ($dd,$inventory)
 }
 
+#you can limit output
 $stats|Sort-Object  perc -Descending |Select-Object deckName, perc 
 #Write-Output $notfound
  
