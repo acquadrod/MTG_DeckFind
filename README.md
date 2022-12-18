@@ -1,5 +1,9 @@
 # MTG_DeckFind
 
+Requirements:
+- powershell (even on Mac and Linux)
+- MTG dragon shield card scanner CSV inventory. Scan your cards and then export all your inventory.
+
 ### checkInventory
 This powershell script check your MTG card inventory and calculates the percetage of matching with decks saved in a folder.
 
@@ -36,4 +40,6 @@ No line parameters, check the first lines of the code.
 
 ## License
 ### Attribution-NonCommmercial-ShareAlike 4.0 International 
-[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)<br>
+All trademarks are property of their owners <br>
+This is a completely indipendent project unlinked to Dragonshield, TappedOut.net, MTGGoldfish site
