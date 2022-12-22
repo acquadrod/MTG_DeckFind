@@ -4,6 +4,8 @@ Requirements:
 - powershell (even on Mac and Linux)
 - MTG dragon shield card scanner CSV inventory. Scan your cards and then export all your inventory.
 
+Before reading the CSV file, open it with a text editor and remove the first line (It should contain "sep=" and remove white spaces from the headers.
+
 ### checkInventory
 This powershell script check your MTG card inventory and calculates the percetage of matching with decks saved in a folder.
 
